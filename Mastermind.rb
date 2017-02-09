@@ -67,16 +67,22 @@ module GameRules
 	
 	def feedback(arr1, arr2)
 	i = 0
-	fb =['    ', '    ', '    ','    ']
+	black = 0
+	white = 0
+	arr = []
 	while (i < arr2.size)
 		if (arr1[i] == arr2[i])
-			fb[i] = :white
-		elsif (arr1.include?(arr2[i]))
-			fb[i] = :black
+			white += 1
+			arr << i
 		end	
+		arr.each do |b|
+			if (arr2.include?(arr[b]))
+				black += 1
+			end
+		end
 		i += 1
 	end
-	fb
+	[white, black]
 	end
 
 	def display arr
@@ -120,15 +126,20 @@ StartTheGame.get_name_of(mastermind.player)
 lost = true
 12.times do |t|
 	mastermind.player.code = mastermind.guess_code
-	puts "*******feedback:*********"
-	mastermind.display mastermind.player.code
 	if(mastermind.player.code == mastermind.secret_code)
 		puts " =>You win!"
 		puts "it took you #{t} guesses to break the code."
 		lost = false
 		break
 	else
-		mastermind.display mastermind.feedback(mastermind.secret_code, mastermind.player.code)
+		fb = mastermind.feedback(mastermind.player.code, mastermind.secret_code)
+		fb[0].times do
+			print '|white'
+		end
+		fb[1].times do
+			print '|black'
+		end
+		puts "|"
 	end
 end
 if (lost)
